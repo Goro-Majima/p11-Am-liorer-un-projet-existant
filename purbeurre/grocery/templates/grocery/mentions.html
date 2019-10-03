@@ -1,0 +1,31 @@
+{% extends 'grocery/base.html' %}
+
+{% load static %}
+{% block title %}- Mentions{% endblock title %}
+{% block content %}
+<style>
+  .box {
+    background-color: black;
+    width: 300px;
+    border: 15px solid orange;
+    padding: 50px;
+    margin: 20px;
+  }
+</style>
+<header class="masthead">
+        <div class="container my-auto">
+          <h2 class="text-center mt-0" style='color:ghostwhite'>Mentions légales</h2>
+          <hr class="divider my-4">          
+          <div class="row">
+            <div class="col-lg-12 col-md-12 text-center box" style='color:ghostwhite'>         
+                  <p>Hébergement: Heroku Cloud Application Platform, https://www.heroku.com </p>
+                  <p>Template: startbootstrap.com </p>
+                  <p>Icône de la carotte par Fabien Jouin </p>
+                  <p>Photos de l'entreprise Pixar </p>
+                  <p>Database: Produits issus de l'api OpenFoodFacts </p>
+                  <p>Application dévelopée par Mickael Ly</p>
+            </div>            
+          </div>
+        </div>
+</header>
+{% endblock %}

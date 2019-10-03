@@ -1,0 +1,21 @@
+{% extends 'grocery/base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% block title %}- Profile{% endblock title %}
+{% block content %} 
+<header class="masthead">
+    <div class="container" style='color:ghostwhite'>
+        <div class="media">
+            <div class="col-lg-12 text-center">
+                <div class="service-box mt-5 mx-auto">
+                    <img class="rounded-circle account-img" src="{% static 'img/colette.png' %}">
+                    <div class="media-body">
+                        <h2 class='account-heading'>{{ user.username }}</h2>
+                        <p style='color:ghostwhite'>{{ user.email }}</p>  
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+{% endblock %}

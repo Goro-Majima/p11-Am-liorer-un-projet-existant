@@ -1,0 +1,111 @@
+{% extends 'grocery/base.html' %}
+{% load static %}
+{% block title %}- Résultats{% endblock title %}
+{% block content %}
+<!-- Masthead -->
+<style>
+    .circle { 
+    border-radius: 80px; 
+    font-size:40px; 
+    color:#fff; 
+    text-align:center;
+    background:rgb(160, 150, 219);
+    width: 40px;
+    position:absolute;
+    top:-20px; 
+    right:-20px;}
+</style>
+<header class="masthead">
+    <div class="container h-10">
+        <div class="row h-50 align-items-center justify-content-center text-center">
+            <div class="col-lg-10 align-self-end">
+                <h2 class="text-uppercase text-white font-weight-bold">Aliment cherché:</h2>
+                <h3 class="text-lowercase text-white font-weight-bold">{{product_name}}</h3>
+                <div class="imagewrap" style="display:inline-block;position:relative;">
+                        <a href="{% url 'detail' product_id %}"><img style="height: 250px; width: 250px; border-radius:25px; object-fit: cover;" src="{{ product_image }}" alt="{{product_name}}" class='img-responsive'></a>                               
+                </div>
+                {% if product_nutrigrade == 'a' %}
+                <img style="height: 150px; width: 250px;" src="{% static 'img/nutriscore-a.png' %}" class='img-responsive'>    
+                {% elif product_nutrigrade == 'b' %}
+                <img style="height: 150px; width: 250px;" src="{% static 'img/nutriscore-b.svg.png' %}" class='img-responsive'>
+                {% elif product_nutrigrade == 'c' %}
+                <img style="height: 150px; width: 250px;" src="{% static 'img/nutriscore-c.svg.png' %}" class='img-responsive'>
+                {% elif product_nutrigrade == 'd' %}
+                <img style="height: 150px; width: 250px;" src="{% static 'img/nutriscore-d.svg.png' %}" class='img-responsive'>
+                {% endif %}
+              <!-- <img style="height: 350px; width: 350px; border-radius:25px" src="{{ product_nutrient }}" alt="Répères nutrionnels pour 100g" class='img-responsive'> -->
+              {% if user.is_authenticated %}
+                <form method='POST' action="{% url 'favorite' user_name=user.id %}">
+                {% csrf_token %}
+                    <div class="form-group">
+                        </br>
+                        <input type="hidden" name="substitute" value="{{ product_id }}">
+                        <button class="btn btn-outline-info" type="submit"><i class="far fa-save fa-2x"> Sauvegarder</i></button>
+                    </div>
+                </form>
+                {% endif %}
+                </br>
+                <p><a style="color: ghostwhite" href="{{ product_url }}">En savoir plus</a></p>
+                <hr class="divider my-4">
+            </div>            
+        </div>
+    </div>
+</header>
+
+<section class="page-section" id="services">
+    <div class="container">
+        <h2 class="text-center mt-0">Vous pouvez remplacer cet aliment par:</h2>
+        <hr class="divider my-4">
+        
+        <div class="row">
+        {% if sub_list|length_is:"0" %}
+            <div class="text-center">
+                <h3 class="text-center mt-0">Aucun substitut avec un meilleur nutrigrade, cet aliment est bon pour la santé !</h3>
+            </div>
+        {% else %}
+            {% for substitute in sub_list %}
+            <div class="col-lg-4 col-md-6 text-center">
+                <div class="mt-5"> 
+                    <div class="imagewrap" style="display:inline-block;position:relative;">
+                        <a href="{% url 'detail' substitute_id=substitute.id %}">
+                            <img style="height: 250px; width: 250px; border-radius:25px; object-fit: cover;" class="sr-icons img-about"  src="{{ substitute.image }}" alt="">
+                            <p class= circle>{{ substitute.nutrigrade }}</p>
+                        </a>
+                    </div>                    
+                    <h3 class="h4 mb-2">{{ substitute.name }}</h3>
+                    {% if user.is_authenticated %}
+                    <form method='POST' action="{% url 'favorite' user_name=user.id %}">
+                    {% csrf_token %}
+                        <div class="form-group">
+                            <input type="hidden" name="substitute" value="{{ substitute.id }}">
+                            <button class="btn btn-outline-info" type="submit"><i class="far fa-save fa-2x"> Sauvegarder</i></button>
+                        </div>
+                    </form>
+                    {% endif %}
+                    <a style="color: rgb(20, 20, 20)" href="{{ substitute.url }}">En savoir plus</a>
+                </div>
+            </div>
+            {% if forloop.counter|divisibleby:3 %}<div class="clearfix"></div>{% endif %}
+            {% endfor %}
+        {% endif %}                 
+        </div>                                                  
+    </div>
+</section>
+{% if paginate %}
+<div class="row h-50 align-items-center justify-content-center text-center">
+  <div class="clearfix"></div>
+    <nav aria-label="">
+        <ul class="pager">
+        {% if sub_list.has_previous %}
+            <li><a href="?page={{ sub_list.previous_page_number }}&txtSearch={{ text }}">Précédent</a></li>
+        {% endif %}
+        {% if sub_list.has_next %}
+            <li><a href="?page={{ sub_list.next_page_number }}&txtSearch={{ text }}">Suivant</a></li>
+        {% endif %}
+        </ul>
+    </nav>
+    </div>
+</div>
+{% endif %}
+
+{% endblock %}

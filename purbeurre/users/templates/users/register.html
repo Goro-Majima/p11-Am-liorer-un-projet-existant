@@ -1,0 +1,28 @@
+{% extends 'grocery/base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% block title %}- Enregistrement{% endblock title %}
+{% block content %} 
+<header class="masthead">
+    <div class='content-section'>
+        <form method="POST">
+            {% csrf_token %}
+            <fieldset class="form-group" style='color:ghostwhite'>
+                <legend class="border-bottom mb-4" >Rejoins nous !</legend>
+                {{ form|crispy }}
+            </fieldset>
+            <div class= "form-group">
+                <button class="btn btn-outline-info" type="submit">Valider</button>
+            </div>
+        </form>
+        
+    </div>
+</header>
+<div class='content-section'>
+    <div class="bg-light py-5">
+        <small class="text-muted">
+            déjà inscrit ? <a class="ml-2" href="{% url 'login' %}">Se connecter</a>
+        </small>
+    </div>
+</div>
+{% endblock %}

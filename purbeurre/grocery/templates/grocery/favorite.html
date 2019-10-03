@@ -1,0 +1,75 @@
+{% extends 'grocery/base.html' %}
+
+{% load static %}
+{% block title %}- Favoris{% endblock title %}
+{% block content %}
+<style>
+    .circle { 
+    border-radius: 80px; 
+    font-size:40px; 
+    color:#fff; 
+    text-align:center;
+    background:rgb(160, 150, 219);
+    width: 40px;
+    position:absolute;
+    top:0; 
+    right:0;}
+</style>
+<header class="masthead">
+    <div class="container h-100">
+      <div class="row h-100 align-items-center justify-content-center text-center">
+        <div class="col-lg-9 align-self-end">
+          <h1 class="text-uppercase text-white font-weight-bold">Aliments sauvegardés</h1>
+          <hr class="divider my-4">
+        </div>
+        <div class="col-lg-8 align-self-baseline">
+          <p class="text-white-75 font-weight-light mb-5">Voici les produits de substitution que vous pouvez consommer tous les jours</p>
+          
+        </div>
+      </div>
+    </div>
+  </header>
+<section class="page-section" id="services">
+    <div class="container">        
+        <div class="row">
+            {% if added_favorite|length_is:"0" %}
+            <div class="text-center">
+                <h3 class="text-center mt-0">Aucun favori </h3>
+            </div>
+            {% else %}
+            {% for favorite in added_favorite %}
+            <div class="col-lg-4 col-md-6 text-center">
+                    <div class="mt-5"> 
+                        <div class="imagewrap" style="display:inline-block;position:relative;">
+                            <a href="{% url 'detail' substitute_id=favorite.product.id %}">    
+                            <img style="height: 250px; width: 250px; border-radius:25px; object-fit: cover;" class="sr-icons img-about"  src="{{ favorite.product.image }}" alt="">
+                            <p class= circle>{{ favorite.product.nutrigrade }}</p>
+                            </a>
+                        </div>                    
+                        <h3 class="h4 mb-2">{{ favorite.product.name }}</h3>
+                        <a style="color: rgb(20, 20, 20)" href="{{ favorite.product.url }}">En savoir plus</a>
+                    </div>
+            </div>
+            {% if forloop.counter|divisibleby:3 %}<div class="clearfix"></div>{% endif %}
+            {% endfor %}  
+            {% endif %}                     
+        </div>                                                  
+    </div>
+</section>
+{% if paginate %}
+<div class="row h-50 align-items-center justify-content-center text-center">
+  <div class="clearfix"></div>
+    <nav aria-label="">
+        <ul class="pager">
+        {% if added_favorite.has_previous %}
+            <li><a href="?page={{ added_favorite.previous_page_number }}">Précédent</a></li>
+        {% endif %}
+        {% if added_favorite.has_next %}
+            <li><a href="?page={{ added_favorite.next_page_number }}">Suivant</a></li>
+        {% endif %}
+        </ul>
+    </nav>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
