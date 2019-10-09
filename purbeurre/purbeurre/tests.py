@@ -2,12 +2,13 @@
 """ Python testing file checking each page returns the correct response"""
 from django.test import TestCase
 from django.test.client import Client
+from django.core import mail
 from django.urls import reverse
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
+from django.db.models import Q
 from grocery.models import Category, Product, Favorite
 from users.forms import UserRegisterForm
-from django.db.models import Q
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 
 class DataFilledTestCase(TestCase):
@@ -206,4 +207,23 @@ class ModelTestCase(TestCase):
         url='url.htt', nutrient='url.htt', category=categ)
         self.assertIs(product.__str__(), "Coca")
 
+class TestMailSent(TestCase):
+    """ testing class used to confirm that an email is sent """
+    def setUp(self):
+        """ method used to confirm that an email is sent """
+        mail.send_mail(
+            'Réinitialisation du mot de passe sur 127.0.0.1:8000', 'Vous recevez \
+            ce message en réponse à votre demande de réinitialisation du mot\
+            de passe de votre compte sur 127.0.0.1:8000.',
+            'lymickael91@gmail.com', ['lymickael91@gmail.com'],
+            fail_silently=False,
+        )
+
+    def test_mail_is_sent(self):
+        """ Test that one message has been sent. """
+        self.assertEqual(len(mail.outbox), 1)
+
+    def test_mail_is_sent_with_the_right_subject(self):
+        """ Verify that the subject of the message is correct. """
+        self.assertEqual(mail.outbox[0].subject, 'Réinitialisation du mot de passe sur 127.0.0.1:8000')
 

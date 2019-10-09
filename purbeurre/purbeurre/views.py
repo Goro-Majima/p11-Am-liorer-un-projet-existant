@@ -24,8 +24,7 @@ def mentions(request):
 def results(request):
     """ get input from user, search the input in the database and display substitutes"""
     if request.method == 'GET':
-        text = 'txtSearch'
-        # product = Product.objects.filter(name__startswith=text).first()
+        text = request.GET.get('txtSearch')
         product = Product.objects.filter(name=text).first()
         if not product:
             messages.warning(request, f'veuillez effectuer une autre recherche !')
