@@ -17,17 +17,25 @@
             </div>
         </div>
     </div>
-    <form method="POST" enctype="multipart/form-data">
-
-        {% csrf_token %}
-        <fieldset class="form-group" style='color:ghostwhite'>
-            <legend class="border-bottom mb-4" >infos du compte </legend>
-            {{ u_form|crispy }}
-            {{ p_form|crispy }}
-        </fieldset>
-        <div class= "form-group">
-            <button class="btn btn-outline-info" type="submit">Mettre à jour</button>
-        </div>
-    </form>
 </header>
+<div class="container">
+    <div class="row justify-content-center align-items-center">
+            <div id="login-column" class="col-md-6">
+                <div id="login-box" class="col-md-12">
+                    <form method="POST" enctype="multipart/form-data">
+                        
+                        {% csrf_token %}
+                        <fieldset class="form-group" style='color:rgb(35, 35, 37)'>
+                            <legend class="border-bottom mb-4" >Infos du compte </legend>
+                            {{ u_form|crispy }}
+                            {{ p_form|crispy }}
+                        </fieldset>
+                        <div class= "form-group">
+                            <button class="btn btn-outline-info" type="submit">Mettre à jour</button>
+                        </div>
+                    </form>
+                </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
