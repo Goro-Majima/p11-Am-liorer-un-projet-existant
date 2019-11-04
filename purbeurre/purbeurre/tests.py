@@ -2,14 +2,14 @@
 """ Python testing file checking each page returns the correct response"""
 from django.test import TestCase
 from django.test.client import Client
-from django.core import mail
-from django.urls import reverse
+from django.urls import reverse, resolve
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.db.models import Q
 from grocery.models import Category, Product, Favorite
 from users.forms import UserRegisterForm
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from .views import results, homepage
 
 class DataFilledTestCase(TestCase):
     """ fill Category with list """
@@ -115,9 +115,11 @@ class ResultsPageTestcase(TestCase):
 
     def test_query_is_valid(self):
         """ must returns 200 """
-        prod = Product.objects.filter(name__startswith=self.product.name).first()
-        response = self.client.get(reverse('results'), {'text': 'prod'})
+        # prod = Product.objects.filter(name__startswith=self.product.name).first()
+        response = self.client.get(reverse('results'), {'text': self.product.name})
+        self.assertEqual(self.product.name, "nutella")
         self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'grocery/home.html')
 
     def test_substitute_is_better_than_product(self):
         """ test that substitures are found if better grade in same category"""
@@ -129,6 +131,19 @@ class ResultsPageTestcase(TestCase):
         response = self.client.get(reverse('results'), {'txtsearch': product.name})
         self.assertEqual(sub.count(), 3)
         self.assertEqual(response.status_code, 200)
+
+    def test_results_url_is_resolved(self):
+        """ test that the url returned is results"""
+        url = reverse('results')
+        self.assertEqual(resolve(url).func, results)
+
+    def test_results_is_not_found(self):
+        """ test that the url returned is home"""
+        text = 'blablabla'
+        response = self.client.get(reverse('results'), {'search': text})
+        product = Product.objects.filter(name=text).first()
+        self.assertEqual(product, None)
+        self.assertTemplateUsed(response, 'grocery/home.html')
 
 class ProfilePageTestCase(TestCase):
     """ Class Test that the function returns the profile page with response 200"""
@@ -206,24 +221,3 @@ class ModelTestCase(TestCase):
         product = Product.objects.create(name="Coca", nutrigrade='a', image='url.htt',\
         url='url.htt', nutrient='url.htt', category=categ)
         self.assertIs(product.__str__(), "Coca")
-
-class TestMailSent(TestCase):
-    """ testing class used to confirm that an email is sent """
-    def setUp(self):
-        """ method used to confirm that an email is sent """
-        mail.send_mail(
-            'Réinitialisation du mot de passe sur 127.0.0.1:8000', 'Vous recevez \
-            ce message en réponse à votre demande de réinitialisation du mot\
-            de passe de votre compte sur 127.0.0.1:8000.',
-            'lymickael91@gmail.com', ['lymickael91@gmail.com'],
-            fail_silently=False,
-        )
-
-    def test_mail_is_sent(self):
-        """ Test that one message has been sent. """
-        self.assertEqual(len(mail.outbox), 1)
-
-    def test_mail_is_sent_with_the_right_subject(self):
-        """ Verify that the subject of the message is correct. """
-        self.assertEqual(mail.outbox[0].subject, 'Réinitialisation du mot de passe sur 127.0.0.1:8000')
-
