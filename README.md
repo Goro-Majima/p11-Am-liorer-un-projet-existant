@@ -1,4 +1,4 @@
-# P8-purbeurre
+# P11-purbeurre improvement
 
 Application made by Mickael Ly in order to achieve a school project.
 
@@ -35,6 +35,10 @@ Don't forget to change password, name, variables if you rename your database inf
 python purbeurre/manage.py runserver
 
 ```
+## Improvement
+
+Users can update their profile by changing avatar, email adress or username.
+If forgotten, users can ask for a reset of the password, a mail will be sent to the mailbox for confirmation.
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
